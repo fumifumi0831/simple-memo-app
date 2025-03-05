@@ -1,24 +1,38 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
 import { useTheme } from '../components/ThemeProvider';
+import { useAuth } from '../contexts/AuthContext';
+import { getNotes, createNote, deleteNote } from '../services/notes';
 
 export default function Home() {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const { darkMode, toggleDarkMode } = useTheme();
+  const { user, logout, isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // 認証状態をチェック
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
 
   // メモ一覧の取得
   const fetchNotes = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8000/notes/');
-      setNotes(response.data);
+      const data = await getNotes();
+      setNotes(data);
+      setError('');
     } catch (error) {
       console.error('Error fetching notes:', error);
+      setError('メモの取得に失敗しました');
     } finally {
       setLoading(false);
     }
@@ -26,39 +40,52 @@ export default function Home() {
 
   // 初回ロード時にメモ一覧を取得
   useEffect(() => {
-    fetchNotes();
-  }, []);
+    if (isAuthenticated) {
+      fetchNotes();
+    }
+  }, [isAuthenticated]);
 
   // 新規メモの作成
-  const createNote = async (e) => {
+  const handleCreateNote = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
 
     try {
-      await axios.post('http://localhost:8000/notes/', {
-        title,
-        content,
-      });
+      await createNote(title, content);
       // フォームをリセット
       setTitle('');
       setContent('');
       // メモ一覧を更新
       fetchNotes();
+      setError('');
     } catch (error) {
       console.error('Error creating note:', error);
+      setError('メモの作成に失敗しました');
     }
   };
 
   // メモの削除
-  const deleteNote = async (id) => {
+  const handleDeleteNote = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/notes/${id}`);
+      await deleteNote(id);
       // メモ一覧を更新
       fetchNotes();
+      setError('');
     } catch (error) {
       console.error('Error deleting note:', error);
+      setError('メモの削除に失敗しました');
     }
   };
+
+  // ログアウトの処理
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  if (!isAuthenticated) {
+    return null; // 認証されていない場合は何も表示しない（useEffectによりリダイレクト）
+  }
 
   return (
     <div className={styles.container}>
@@ -69,16 +96,26 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <div className={styles.themeToggle}>
-          <button onClick={toggleDarkMode} className={styles.themeButton}>
-            {darkMode ? '🌞 ライトモード' : '🌙 ダークモード'}
-          </button>
+        <div className={styles.header}>
+          <div className={styles.themeToggle}>
+            <button onClick={toggleDarkMode} className={styles.themeButton}>
+              {darkMode ? '🌞 ライトモード' : '🌙 ダークモード'}
+            </button>
+          </div>
+          <div className={styles.userInfo}>
+            {user && <span>ようこそ、{user.username}さん</span>}
+            <button onClick={handleLogout} className={styles.logoutButton}>
+              ログアウト
+            </button>
+          </div>
         </div>
 
         <h1 className={styles.title}>Memo App</h1>
 
+        {error && <div className={styles.error}>{error}</div>}
+
         <div className={styles.formContainer}>
-          <form onSubmit={createNote} className={styles.form}>
+          <form onSubmit={handleCreateNote} className={styles.form}>
             <input
               type="text"
               placeholder="タイトル"
@@ -113,7 +150,7 @@ export default function Home() {
                     作成日: {new Date(note.created_at).toLocaleDateString()}
                   </small>
                   <button
-                    onClick={() => deleteNote(note.id)}
+                    onClick={() => handleDeleteNote(note.id)}
                     className={styles.deleteButton}
                   >
                     削除
