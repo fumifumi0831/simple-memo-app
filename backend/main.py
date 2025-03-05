@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import timedelta
+from pydantic import BaseModel
+from datetime import timedelta, datetime
 
 from database import get_db, engine, Base
 from models import User, Note
@@ -26,6 +27,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# リクエスト/レスポンスモデル定義
+class NoteCreate(BaseModel):
+    title: str
+    content: str
+
+class NoteResponse(BaseModel):
+    id: int
+    title: str
+    content: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
 
 # トークンを取得するエンドポイント（ログイン）
 @app.post("/token", response_model=Token, tags=["Authentication"])
@@ -66,21 +82,6 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
-# メモ関連のモデル
-class NoteCreate:
-    title: str
-    content: str
-
-class NoteResponse:
-    id: int
-    title: str
-    content: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    
-    class Config:
-        orm_mode = True
-
 # APIエンドポイント
 @app.get("/", tags=["Root"])
 def read_root():
@@ -88,8 +89,8 @@ def read_root():
 
 # メモ作成エンドポイント
 @app.post("/notes/", response_model=NoteResponse, status_code=status.HTTP_201_CREATED, tags=["Notes"])
-def create_note(title: str, content: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    db_note = Note(title=title, content=content, owner_id=current_user.id)
+def create_note(note: NoteCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    db_note = Note(title=note.title, content=note.content, owner_id=current_user.id)
     db.add(db_note)
     db.commit()
     db.refresh(db_note)
