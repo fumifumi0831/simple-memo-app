@@ -10,18 +10,6 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-class Note(Base):
-    __tablename__ = "notes"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    content = Column(Text)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-
-# データベースとテーブルの作成
-Base.metadata.create_all(bind=engine)
-
 # DBセッションの取得
 def get_db():
     db = SessionLocal()
