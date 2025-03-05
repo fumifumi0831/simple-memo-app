@@ -11,6 +11,36 @@
   align-items: center;
 }
 
+.header {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.logoutButton {
+  padding: 0.5rem 1rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.logoutButton:hover {
+  background-color: #d32f2f;
+}
+
 .title {
   margin: 0;
   line-height: 1.15;
@@ -107,9 +137,7 @@
 }
 
 .themeToggle {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+  position: relative;
 }
 
 .themeButton {
@@ -119,4 +147,15 @@
   border: 1px solid var(--card-border);
   border-radius: 4px;
   cursor: pointer;
+}
+
+.error {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #ffdddd;
+  color: #d32f2f;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }
