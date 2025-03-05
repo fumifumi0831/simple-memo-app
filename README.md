@@ -1,54 +1,210 @@
-# Simple Memo Application
+# シンプルメモアプリ
 
-A simple memo application built with Next.js (frontend) and FastAPI + SQLAlchemy (backend).
+Next.js（フロントエンド）とFastAPI + SQLAlchemy（バックエンド）を使用した、認証機能付きのシンプルなメモアプリケーションです。
 
-## Features
+## アプリの概要
 
-- Create, view, and delete memos
-- Dark mode that persists using localStorage
-- RESTful API backend
-- SQLite database for storage
+このアプリケーションは、データベース（サーバーサイド）、セッション管理、ローカルストレージ（フロントエンド）の3つのデータ保存技術を学習するために作成されました。
 
-## Project Structure
+### 主な機能
+
+- **ユーザー認証**
+  - ユーザー登録
+  - ログイン/ログアウト
+  - JWTを使用したセッション管理
+
+- **メモ管理**
+  - メモの作成（タイトルと内容）
+  - メモの一覧表示
+  - メモの削除
+
+- **UIカスタマイズ**
+  - ダークモード/ライトモード切替（ローカルストレージに保存）
+
+## 環境構成
+
+### プロジェクト構造
 
 ```
 simple-memo-app/
-├── backend/     # FastAPI application
-└── frontend/    # Next.js application
+├── backend/     # FastAPIアプリケーション
+│   ├── main.py             # メインアプリケーション
+│   ├── database.py         # データベース設定
+│   ├── models.py           # データモデル
+│   ├── auth.py             # 認証機能
+│   └── requirements.txt    # 依存ライブラリ
+└── frontend/    # Next.jsアプリケーション
+    ├── pages/              # ページコンポーネント
+    │   ├── index.js        # メインページ
+    │   ├── login.js        # ログインページ
+    │   ├── register.js     # 登録ページ
+    │   └── _app.js         # アプリケーションラッパー
+    ├── components/         # 再利用可能なコンポーネント
+    │   └── ThemeProvider.js # テーマ管理
+    ├── contexts/           # Reactコンテキスト
+    │   └── AuthContext.js   # 認証状態管理
+    ├── services/           # APIサービス
+    │   ├── auth.js          # 認証サービス
+    │   └── notes.js         # メモサービス
+    └── styles/             # CSSスタイル
 ```
 
-## Setup and Run
+### 技術スタック
 
-### Backend
+#### バックエンド
+- **FastAPI**: 高速なPythonウェブフレームワーク
+- **SQLAlchemy**: Pythonの代表的なORM（Object-Relational Mapper）
+- **SQLite**: 軽量データベース
+- **JWT**: JSON Web Token認証
+- **Pydantic**: データバリデーション
+- **Passlib**: パスワードハッシュ
 
-```bash
-# Navigate to backend directory
-cd backend
+#### フロントエンド
+- **Next.js**: Reactベースのフレームワーク
+- **React Hooks**: ステート管理（useState, useEffect, useContext）
+- **Axios**: HTTP通信
+- **CSS Modules**: コンポーネント単位のスタイリング
 
-# Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+## データ保存技術の比較
 
-# Install dependencies
-pip install -r requirements.txt
+このアプリは3つの異なるデータ保存技術を実装しています：
 
-# Run the server
-uvicorn main:app --reload
-```
+1. **サーバーサイドデータベース（SQLite + SQLAlchemy）**
+   - ユーザー情報とメモデータの永続的な保存
+   - 複数のユーザー間でのデータ分離
+   - セキュアなデータ保存
 
-The backend server will run at http://localhost:8000. API documentation is available at http://localhost:8000/docs.
+2. **セッション管理（JWT）**
+   - ユーザー認証状態の管理
+   - API呼び出しの認証
+   - クロスリクエスト状態保持
 
-### Frontend
+3. **フロントエンドストレージ（localStorage）**
+   - UI設定の保存（ダークモード/ライトモード）
+   - セッショントークンの保存
+   - ブラウザ再読み込み後も設定を維持
 
-```bash
-# Navigate to frontend directory
-cd frontend
+## セットアップと実行方法
 
-# Install dependencies
-npm install
+### 前提条件
+- Python 3.8以上
+- Node.js 16以上
+- npm（または yarn）
 
-# Run the development server
-npm run dev
-```
+### バックエンド起動手順
 
-The frontend application will run at http://localhost:3000.
+1. バックエンドディレクトリに移動
+   ```bash
+   cd simple-memo-app/backend
+   ```
+
+2. 仮想環境の作成とアクティベート
+   ```bash
+   # 仮想環境の作成
+   python -m venv venv
+
+   # 仮想環境のアクティベート（Windows）
+   venv\Scripts\activate
+
+   # 仮想環境のアクティベート（macOS/Linux）
+   source venv/bin/activate
+   ```
+
+3. 必要なパッケージのインストール
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. バックエンドサーバーの起動
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+5. バックエンドは http://localhost:8000 で実行されます
+   - API ドキュメントは http://localhost:8000/docs で確認できます
+
+### フロントエンド起動手順
+
+1. 別のターミナルでフロントエンドディレクトリに移動
+   ```bash
+   cd simple-memo-app/frontend
+   ```
+
+2. 必要なパッケージのインストール
+   ```bash
+   npm install
+   # または
+   yarn install
+   ```
+
+3. 開発サーバーの起動
+   ```bash
+   npm run dev
+   # または
+   yarn dev
+   ```
+
+4. フロントエンドは http://localhost:3000 で実行されます
+
+## アプリの使用方法
+
+1. ブラウザで http://localhost:3000 にアクセス
+2. 初めての場合は「登録」リンクからアカウント作成
+3. ユーザー名、メールアドレス、パスワードを入力して登録
+4. 登録後自動的にログインし、メインページにリダイレクト
+5. メモの作成：
+   - タイトルと内容を入力
+   - 「保存」ボタンをクリック
+6. 右上のボタンでダークモード/ライトモード切替
+7. 「ログアウト」ボタンでログアウト
+
+## 技術的詳細
+
+### サーバーサイドデータベース
+- SQLiteデータベースは `backend/memo_app.db` に保存されます
+- ユーザーテーブルとメモテーブルの2つのテーブルがあります
+- 各メモはユーザーIDと関連付けられており、自分のメモのみが表示されます
+
+### セッション管理
+- ログイン時にJWTトークンが生成されます
+- トークンはフロントエンドのlocalStorageに保存されます
+- APIリクエスト時に認証ヘッダーとして送信されます
+- トークンの有効期限は30分です
+
+### フロントエンドストレージ
+- テーマ設定（ダークモード/ライトモード）はlocalStorageに保存されます
+- ブラウザを閉じても設定は保持されます
+
+## 開発情報
+
+### バックエンド拡張方法
+- 新しいモデルは `models.py` に追加します
+- 新しいエンドポイントは `main.py` に追加します
+- 認証関連のロジックは `auth.py` に追加します
+
+### フロントエンド拡張方法
+- 新しいページは `pages/` ディレクトリに追加します
+- 新しいAPIサービスは `services/` ディレクトリに追加します
+- コンポーネントは `components/` ディレクトリに追加します
+
+## トラブルシューティング
+
+1. **バックエンドの起動エラー**
+   - Pythonのバージョンが3.8以上であることを確認
+   - 必要なライブラリがすべてインストールされているか確認
+   - ポート8000が他のアプリケーションで使用されていないか確認
+
+2. **フロントエンドの起動エラー**
+   - Node.jsのバージョンが16以上であることを確認
+   - `npm install` が正常に完了しているか確認
+   - ポート3000が他のアプリケーションで使用されていないか確認
+
+3. **認証エラー**
+   - バックエンドが起動しているか確認
+   - 正しいユーザー名とパスワードを使用しているか確認
+   - ブラウザのlocalStorageをクリアして再ログイン
+
+4. **メモ操作のエラー**
+   - ネットワーク接続を確認
+   - 認証が有効か確認（再ログインを試す）
+   - バックエンドのログを確認
