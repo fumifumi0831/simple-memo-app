@@ -1,0 +1,42 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Theme variables */
+:root {
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --card-bg: #ffffff;
+  --card-border: #eaeaea;
+}
+
+.dark-mode {
+  --background-color: #1a1a1a;
+  --text-color: #f0f0f0;
+  --card-bg: #2a2a2a;
+  --card-border: #444444;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
