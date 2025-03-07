@@ -19,18 +19,18 @@ if ! command -v docker &> /dev/null; then
 fi
 
 # Docker Composeがインストールされているか確認
-if ! command -v docker-compose &> /dev/null; then
-  echo "Error: Docker Composeがインストールされていません。"
-  echo "https://docs.docker.com/compose/install/ からインストールしてください。"
-  exit 1
+if command -v docker-compose &> /dev/null; then
+  DOCKER_COMPOSE="docker-compose"
+else
+  DOCKER_COMPOSE="docker compose"
 fi
 
 echo "Docker環境を確認しています..."
 docker --version
-docker-compose --version
+$DOCKER_COMPOSE --version
 
 echo "Dockerイメージをビルドしています..."
-docker-compose build
+$DOCKER_COMPOSE build
 
 echo "ローカル環境でDockerコンテナを起動しています..."
 echo "起動後、Ctrl+Cで停止できます。"
@@ -38,7 +38,7 @@ echo "別のターミナルで以下のURLにアクセスして動作確認し�
 echo "フロントエンド: http://localhost:3000"
 echo "バックエンドAPI: http://localhost:8000/docs"
 
-docker-compose up
+$DOCKER_COMPOSE up
 
 echo "ステップ1が完了しました。"
 echo "次に進む前に以下を確認してください："

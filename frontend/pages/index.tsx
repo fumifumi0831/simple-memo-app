@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getNotes, createNote, deleteNote } from '../services/notes';
 import { Note } from '../types';
 
-export default function Home(): JSX.Element {
+export default function Home(): JSX.Element | null {
   const [notes, setNotes] = useState<Note[]>([]);
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');

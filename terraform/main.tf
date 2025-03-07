@@ -1,4 +1,5 @@
 provider "azurerm" {
+  subscription_id = "b57c894d-6ed1-46dd-bb9e-a756d9b9d652"
   features {}
 }
 
@@ -43,16 +44,15 @@ resource "azurerm_linux_web_app" "backend_dev" {
 
   site_config {
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/simple-memo-app-backend"
-      docker_image_tag = "latest"
+      docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
+      docker_registry_username = azurerm_container_registry.acr.admin_username
+      docker_registry_password = azurerm_container_registry.acr.admin_password
+      docker_image_name = "simple-memo-app-backend:latest"
     }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
     "ENVIRONMENT"                         = "development"
     "SECRET_KEY"                          = var.secret_key
   }
@@ -67,16 +67,15 @@ resource "azurerm_linux_web_app" "frontend_dev" {
 
   site_config {
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/simple-memo-app-frontend"
-      docker_image_tag = "latest"
+      docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
+      docker_registry_username = azurerm_container_registry.acr.admin_username
+      docker_registry_password = azurerm_container_registry.acr.admin_password
+      docker_image_name = "simple-memo-app-frontend:latest"
     }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
     "NEXT_PUBLIC_API_URL"                 = "https://simple-memo-app-backend-dev.azurewebsites.net"
   }
 }
@@ -90,16 +89,15 @@ resource "azurerm_linux_web_app" "backend_prod" {
 
   site_config {
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/simple-memo-app-backend"
-      docker_image_tag = "latest"
+      docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
+      docker_registry_username = azurerm_container_registry.acr.admin_username
+      docker_registry_password = azurerm_container_registry.acr.admin_password
+      docker_image_name = "simple-memo-app-backend:latest"
     }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
     "ENVIRONMENT"                         = "production"
     "SECRET_KEY"                          = var.secret_key
   }
@@ -114,16 +112,15 @@ resource "azurerm_linux_web_app" "frontend_prod" {
 
   site_config {
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/simple-memo-app-frontend"
-      docker_image_tag = "latest"
+      docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
+      docker_registry_username = azurerm_container_registry.acr.admin_username
+      docker_registry_password = azurerm_container_registry.acr.admin_password
+      docker_image_name = "simple-memo-app-frontend:latest"
     }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
     "NEXT_PUBLIC_API_URL"                 = "https://simple-memo-app-backend-prod.azurewebsites.net"
   }
 }
@@ -135,16 +132,15 @@ resource "azurerm_linux_web_app_slot" "backend_prod_staging" {
 
   site_config {
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/simple-memo-app-backend"
-      docker_image_tag = "latest"
+      docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
+      docker_registry_username = azurerm_container_registry.acr.admin_username
+      docker_registry_password = azurerm_container_registry.acr.admin_password
+      docker_image_name = "simple-memo-app-backend:latest"
     }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
     "ENVIRONMENT"                         = "staging"
     "SECRET_KEY"                          = var.secret_key
   }
@@ -157,16 +153,15 @@ resource "azurerm_linux_web_app_slot" "frontend_prod_staging" {
 
   site_config {
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/simple-memo-app-frontend"
-      docker_image_tag = "latest"
+      docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
+      docker_registry_username = azurerm_container_registry.acr.admin_username
+      docker_registry_password = azurerm_container_registry.acr.admin_password
+      docker_image_name = "simple-memo-app-frontend:latest"
     }
   }
 
   app_settings = {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
     "NEXT_PUBLIC_API_URL"                 = "https://simple-memo-app-backend-prod.azurewebsites.net"
   }
 }
