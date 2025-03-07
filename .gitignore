@@ -1,1 +1,10 @@
- 
+# Node.js
+node_modules/
+.next/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+tfplan
