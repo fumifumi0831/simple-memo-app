@@ -5,12 +5,8 @@ import {
   RegisterCredentials 
 } from '../types';
 
-// 変更後 - 環境に応じて正しいバックエンドURLを使用
-const API_URL = window.location.hostname.includes('dev')
-  ? 'https://simple-memo-app-backend-dev.azurewebsites.net'
-  : window.location.hostname.includes('prod')
-    ? 'https://simple-memo-app-backend-prod.azurewebsites.net'
-    : 'http://localhost:8000';
+// 環境変数を使用
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 // ログイン処理
 export const login = async (username: string, password: string): Promise<TokenResponse | null> => {
