@@ -2,7 +2,9 @@ import axios, { AxiosResponse } from 'axios';
 import { authHeader } from './auth';
 import { Note, NoteInput } from '../types';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = process.env.NODE_ENV === 'production'
+  ? 'https://simple-memo-app-backend-prod.azurewebsites.net'
+  : 'http://localhost:8000';
 
 // メモ一覧を取得
 export const getNotes = async (): Promise<Note[]> => {
