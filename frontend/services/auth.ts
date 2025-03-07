@@ -5,7 +5,10 @@ import {
   RegisterCredentials 
 } from '../types';
 
-const API_URL = 'http://localhost:8000';
+// 環境に応じてAPIエンドポイントを設定
+const API_URL = process.env.NODE_ENV === 'production'
+  ? 'https://simple-memo-app-backend-prod.azurewebsites.net'
+  : 'http://localhost:8000';
 
 // ログイン処理
 export const login = async (username: string, password: string): Promise<TokenResponse | null> => {
