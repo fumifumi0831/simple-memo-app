@@ -44,6 +44,8 @@ jobs:
         with:
           app-name: 'simple-memo-app-backend-dev'
           images: '${{ secrets.ACR_LOGIN_SERVER }}/simple-memo-app-backend:latest'
+          app-settings: |
+            WEBSITES_PORT=8000
       
       - name: Deploy to Azure Web App (Frontend)
         uses: azure/webapps-deploy@v2
