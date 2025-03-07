@@ -22,7 +22,7 @@ app = FastAPI(title="Memo App API")
 # CORSミドルウェアの設定（フロントエンドからのリクエストを許可）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.jsのデフォルトURL
+    allow_origins=["http://localhost:3000", "https://simple-memo-app-frontend-prod.azurewebsites.net", "https://simple-memo-app-frontend-dev.azurewebsites.net"],  # Next.jsのデフォルトURL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
