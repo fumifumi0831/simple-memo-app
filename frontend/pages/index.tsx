@@ -178,3 +178,4 @@ export default function Home(): JSX.Element | null {
 // Development environment test change
 >>>>>>> develop
 // Production environment configuration
+// Production environment configuration
