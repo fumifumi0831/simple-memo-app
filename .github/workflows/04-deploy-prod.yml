@@ -34,6 +34,8 @@ jobs:
           context: ./frontend
           push: true
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/simple-memo-app-frontend:prod
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://simple-memo-app-backend-prod.azurewebsites.net
       
       - name: Azure Login
         uses: azure/login@v1
