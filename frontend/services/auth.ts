@@ -5,8 +5,22 @@ import {
   RegisterCredentials 
 } from '../types';
 
-// 環境変数を使用
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// 基本のAPI URL設定
+let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+// クライアントサイドでの実行時に環境を検出して上書き
+if (typeof window !== 'undefined') {
+  const hostname = window.location.hostname;
+  if (hostname.includes('prod')) {
+    // 本番環境
+    API_URL = 'https://simple-memo-app-backend-prod.azurewebsites.net';
+    console.log('Production environment detected, API URL:', API_URL);
+  } else if (hostname.includes('dev')) {
+    // 開発環境
+    API_URL = 'https://simple-memo-app-backend-dev.azurewebsites.net';
+    console.log('Development environment detected, API URL:', API_URL);
+  }
+}
 
 // ログイン処理
 export const login = async (username: string, password: string): Promise<TokenResponse | null> => {

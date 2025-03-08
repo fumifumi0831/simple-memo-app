@@ -2,9 +2,22 @@ import axios, { AxiosResponse } from 'axios';
 import { authHeader } from './auth';
 import { Note, NoteInput } from '../types';
 
-// 環境変数を使用
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// 基本のAPI URL設定
+let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+// クライアントサイドでの実行時に環境を検出して上書き
+if (typeof window !== 'undefined') {
+  const hostname = window.location.hostname;
+  if (hostname.includes('prod')) {
+    // 本番環境
+    API_URL = 'https://simple-memo-app-backend-prod.azurewebsites.net';
+    console.log('Notes service: Production environment detected, API URL:', API_URL);
+  } else if (hostname.includes('dev')) {
+    // 開発環境
+    API_URL = 'https://simple-memo-app-backend-dev.azurewebsites.net';
+    console.log('Notes service: Development environment detected, API URL:', API_URL);
+  }
+}
 
 // メモ一覧を取得
 export const getNotes = async (): Promise<Note[]> => {
