@@ -164,4 +164,17 @@ export default function Home(): JSX.Element | null {
       </main>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}// Development environment test change
+// Development environment test change
+// Development environment test change
+// Development environment test change
+// Development environment test change
+// Development environment test change
+// Development environment test change
+// Development environment test change
+// Production environment configuration
+>>>>>>> develop
+// Production environment configuration
