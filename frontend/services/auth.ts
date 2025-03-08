@@ -5,21 +5,34 @@ import {
   RegisterCredentials 
 } from '../types';
 
-// 基本のAPI URL設定
+// 基本のAPI URL設定（サーバーサイドでも安全）
 let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// クライアントサイドでの実行時に環境を検出して上書き
-if (typeof window !== 'undefined') {
-  const hostname = window.location.hostname;
-  if (hostname.includes('prod')) {
-    // 本番環境
-    API_URL = 'https://simple-memo-app-backend-prod.azurewebsites.net';
-    console.log('Production environment detected, API URL:', API_URL);
-  } else if (hostname.includes('dev')) {
-    // 開発環境
-    API_URL = 'https://simple-memo-app-backend-dev.azurewebsites.net';
-    console.log('Development environment detected, API URL:', API_URL);
+// 環境変数が設定されていない場合のフォールバック処理
+// この関数はクライアントサイドでのみ呼び出される
+const detectEnvironment = () => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    const hostname = window.location.hostname;
+    if (hostname.includes('prod')) {
+      // 本番環境
+      API_URL = 'https://simple-memo-app-backend-prod.azurewebsites.net';
+      console.log('Production environment detected, API URL:', API_URL);
+    } else if (hostname.includes('dev')) {
+      // 開発環境
+      API_URL = 'https://simple-memo-app-backend-dev.azurewebsites.net';
+      console.log('Development environment detected, API URL:', API_URL);
+    }
+  } catch (error) {
+    console.error('Error detecting environment:', error);
   }
+};
+
+// クライアントサイドでのみ実行
+if (typeof window !== 'undefined') {
+  // 非同期で環境検出を実行（エラーが発生してもアプリは動作する）
+  setTimeout(detectEnvironment, 0);
 }
 
 // ログイン処理
