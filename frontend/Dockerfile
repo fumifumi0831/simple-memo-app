@@ -1,3 +1,4 @@
+# frontend/Dockerfile
 FROM node:18-alpine AS base
 
 # Install dependencies only when needed
@@ -14,8 +15,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects anonymous telemetry data about general usage
-ENV NEXT_TELEMETRY_DISABLED 1
+# 環境変数の設定（ビルド時）
+ENV NEXT_TELEMETRY_DISABLED=1
+# ARG を使用して、ビルド時に値を渡せるようにする
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 # Build the application
 RUN npm run build
@@ -24,8 +28,8 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs
@@ -41,7 +45,7 @@ COPY --from=builder /app/package.json ./package.json
 USER nextjs
 
 # Set the correct port
-ENV PORT 3000
+ENV PORT=3000
 EXPOSE 3000
 
 # Start the application
